@@ -1,42 +1,50 @@
-# sv
+# Riyad-us-Salihin — رياض الصالحين
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A minimal, installable web app for reading **Riyad-us-Salihin** (Gardens of the Righteous), the classical hadith collection compiled by Imam an-Nawawi (رَحِمَهُ اللهُ). One hadith at a time, with Arabic, English translation, and commentary.
 
-## Creating a project
+The English translation and commentary are sourced from **Muslims At Work Publications** (South Africa), 3-volume edition under General Editor Moulana Afzal Ismail.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```sh
-# create a new project
-npx sv create my-app
-```
+- **1,896 hadiths** across 372 chapters / 19 books
+- Arabic text + English translation + commentary
+- Quranic intro verses at the start of each chapter
+- **Full-text search** across narrators, text, and commentary
+- **3-slot reading progress** — auto-saves your position to `localStorage`; create new slots when you jump elsewhere
+- **Keyboard navigation** (← / →)
+- **PWA** — installable, works offline
+- Dark, glass-morphism UI
 
-To recreate this project with the same configuration:
+## Stack
 
-```sh
-# recreate this project
-bun x sv@0.13.0 create --template minimal --types jsdoc --install bun my-app
-```
+- **SvelteKit 2** + **Svelte 5** (runes)
+- **Tailwind CSS v4**
+- **Vite** + **vite-plugin-pwa** (Workbox)
+- **Vercel** for hosting
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+## Development
 
 ```sh
-npm run build
+bun install
+bun run dev
 ```
 
-You can preview the production build with `npm run preview`.
+Build a production bundle:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+bun run build
+bun run preview
+```
+
+## Routes
+
+- `/` — hadith reader with search and bookmarks
+- `/about` — info on the book, author, translation source
+
+## Credits
+
+- **Imam an-Nawawi** (631–676 AH / 1233–1277 CE) — original compiler
+- **Muslims At Work Publications** ([matwork.co.za](https://www.matwork.co.za)) — English translation & commentary
+- Darussalam Publishers / Hafiz Salahuddin Yusuf — inspiration for this project
+
+> This is a free resource for the Muslim community. All praise is due to Allah, Lord of the worlds.
