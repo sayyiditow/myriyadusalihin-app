@@ -73,14 +73,14 @@
         aria-label="Close contents"
         class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-default"
         onclick={() => (open = false)}
-        transition:fade={{ duration: 200 }}
+        transition:fade={{ duration: 120 }}
     ></button>
 
     <!-- Drawer -->
     <aside
         aria-label="Table of contents"
         class="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-bg-card border-r border-white/10 shadow-2xl z-50 flex flex-col"
-        transition:fly={{ x: -360, duration: 250, opacity: 1 }}
+        transition:fly={{ x: -360, duration: 160, opacity: 1 }}
     >
         <!-- Header -->
         <div
