@@ -3,21 +3,37 @@
     import { riyadusSalihin } from '$lib/content.js'
     import { searchHadiths } from '$lib/search.js'
     import InstallPrompt from '$lib/InstallPrompt.svelte'
+    import ChaptersDrawer from '$lib/ChaptersDrawer.svelte'
     import { onMount } from 'svelte'
     import { fly } from 'svelte/transition'
 
     let searchQuery = $state('')
     let previousSearchQuery = ''
 
-    // Flatten all hadiths for easy navigation
+    // Flatten all hadiths for easy navigation. isFirstInChapter lets the
+    // reader render intro verses at the start of every chapter, not just
+    // the very first hadith.
     const allHadiths = riyadusSalihin.flatMap((chapter) =>
-        chapter.hadiths.map((h) => ({
+        chapter.hadiths.map((h, idx) => ({
             ...h,
+            chapterId: chapter.id,
             chapterTitle: chapter.title,
             arabicChapterTitle: chapter.arabicTitle,
             introVerses: chapter.introVerses,
+            isFirstInChapter: idx === 0,
         })),
     )
+
+    // Compact chapter list for the drawer (title + arabic + hadith range).
+    const chapterEntries = riyadusSalihin.map((c) => ({
+        id: c.id,
+        title: c.title,
+        arabicTitle: c.arabicTitle,
+        firstNumber: c.hadiths[0]?.number ?? 0,
+        lastNumber: c.hadiths.at(-1)?.number ?? 0,
+    }))
+
+    let chaptersOpen = $state(false)
 
     let filteredHadiths = $derived(
         searchQuery.trim() === ''
@@ -36,6 +52,8 @@
     let readingSlots = $state([])
     let activeSlotIndex = $state(0)
     let showBookmarkMenu = $state(false)
+    /** @type {HTMLDivElement | undefined} */
+    let bookmarkRef = $state()
     let lastSavedHadith = -1 // Track to avoid infinite loops
     let isRestored = false // Prevent saving until after restoration
 
@@ -233,11 +251,43 @@
         }
     }
 
+    /** @param {number} chapterId */
+    function jumpToChapter(chapterId) {
+        const chapter = riyadusSalihin.find((c) => c.id === chapterId)
+        if (!chapter || chapter.hadiths.length === 0) return
+        const firstNumber = chapter.hadiths[0].number
+        const idx = allHadiths.findIndex((h) => h.number === firstNumber)
+        if (idx === -1) return
+        searchQuery = ''
+        currentIndex = idx
+    }
+
+    // Close bookmark menu on outside click
+    $effect(() => {
+        if (!showBookmarkMenu) return
+        /** @param {MouseEvent} e */
+        function onDocClick(e) {
+            if (
+                bookmarkRef &&
+                e.target instanceof Node &&
+                !bookmarkRef.contains(e.target)
+            ) {
+                showBookmarkMenu = false
+            }
+        }
+        document.addEventListener('click', onDocClick)
+        return () => document.removeEventListener('click', onDocClick)
+    })
+
     // Navigation via keys
     /**
-     * @param {{ key: string; }} e
+     * @param {KeyboardEvent} e
      */
     function handleKeydown(e) {
+        if (e.key === 'Escape' && showBookmarkMenu) {
+            showBookmarkMenu = false
+            return
+        }
         if (e.key === 'ArrowRight') nextHadith()
         if (e.key === 'ArrowLeft') prevHadith()
     }
@@ -266,8 +316,30 @@
 
         <!-- Search Row with Bookmark -->
         <div
-            class="flex items-center gap-2 w-full max-w-md mx-auto mb-2 md:mb-6"
+            class="flex items-center gap-2 w-full max-w-2xl mx-auto mb-2 md:mb-6"
         >
+            <!-- Contents Drawer Trigger (leading) -->
+            <button
+                onclick={() => (chaptersOpen = true)}
+                class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
+                title="Table of contents"
+                aria-label="Open table of contents"
+            >
+                <svg
+                    class="w-5 h-5 md:w-6 md:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h10"
+                    ></path>
+                </svg>
+            </button>
+
             <!-- Search Input -->
             <div class="relative flex-1">
                 <input
@@ -293,7 +365,7 @@
             </div>
 
             <!-- Reading Progress Bookmark Button -->
-            <div class="relative">
+            <div bind:this={bookmarkRef} class="relative">
                 <button
                     onclick={() => (showBookmarkMenu = !showBookmarkMenu)}
                     class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all relative cursor-pointer"
@@ -472,8 +544,8 @@
                         </div>
                     </div>
 
-                    <!-- Intro Verses (Only at start of chapter/index 0) -->
-                    {#if currentIndex === 0 && currentHadith.introVerses && currentHadith.introVerses.length > 0}
+                    <!-- Intro Verses (Shown at the start of each chapter) -->
+                    {#if currentHadith.isFirstInChapter && currentHadith.introVerses && currentHadith.introVerses.length > 0}
                         <div
                             class="space-y-6 bg-white/3 p-5 md:p-8 rounded-2xl border border-white/5"
                         >
@@ -645,6 +717,13 @@
         </div>
     {/if}
 </div>
+
+<ChaptersDrawer
+    bind:open={chaptersOpen}
+    chapters={chapterEntries}
+    currentChapterId={currentHadith?.chapterId ?? 0}
+    onSelect={jumpToChapter}
+/>
 
 <style>
     :global(body) {
