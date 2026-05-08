@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+
+@theme {
+    --color-primary: #c29f64;
+    --color-primary-hover: #dfb674;
+    --color-bg-dark: #121212;
+    --color-bg-card: #1e1e1e;
+    --color-text-main: #e0e0e0;
+    --color-text-dim: #a0a0a0;
+    --color-quran: #c5a059;
+    --color-hadith: #10b981;
+}
+
+:root {
+    --primary: #c29f64;
+    --bg-dark: #121212;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-main);
+    overflow-x: hidden;
+}
+
+.arabic {
+    font-family: 'Noto Naskh Arabic', serif;
+    direction: rtl;
+    line-height: 2.2;
+}
+
+.glass-card {
+    background: var(--color-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+}
