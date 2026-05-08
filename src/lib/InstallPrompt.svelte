@@ -148,7 +148,7 @@
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">2</span>
-                        <span>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></span>
+                        <span>Tap <strong>"Install app"</strong> (not "Add to Home screen" — that creates a browser shortcut)</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">3</span>
