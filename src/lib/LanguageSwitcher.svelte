@@ -33,12 +33,12 @@
         class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer text-xs md:text-sm font-medium"
         title={ui('changeLanguage', lang)}
     >
-        {LANGUAGES.find((l) => l.code === lang)?.label ?? lang}
-    </button>
+    {LANGUAGES.find((l) => l.code === lang)?.shortLabel ?? lang.toUpperCase()}
+</button>
 
     {#if open}
         <div
-            class="absolute right-0 top-full mt-2 w-36 bg-bg-card border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+            class="absolute right-0 top-full mt-2 w-40 bg-bg-card border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
         >
             {#each LANGUAGES as l}
                 <button
@@ -47,7 +47,7 @@
                         ? 'text-primary bg-primary/10 font-medium'
                         : 'text-text-dim'}"
                 >
-                    {l.label}
+                    {l.shortLabel} - {l.label}
                 </button>
             {/each}
         </div>

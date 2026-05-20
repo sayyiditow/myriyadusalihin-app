@@ -10,12 +10,12 @@
 
 /** Available languages */
 export const LANGUAGES = [
-  { code: 'en', label: 'English', dir: 'ltr' },
-  { code: 'tr', label: 'Türkçe', dir: 'ltr' },
-  { code: 'fr', label: 'Français', dir: 'ltr' },
-  { code: 'sw', label: 'Kiswahili', dir: 'ltr' },
-  { code: 'cr', label: 'Kreol (Moris)', dir: 'ltr' },
-  { code: 'ur', label: 'Urdu', dir: 'rtl' },
+  { code: 'en', label: 'English', shortLabel: 'EN', dir: 'ltr' },
+  { code: 'tr', label: 'Türkçe', shortLabel: 'TR', dir: 'ltr' },
+  { code: 'fr', label: 'Français', shortLabel: 'FR', dir: 'ltr' },
+  { code: 'sw', label: 'Kiswahili', shortLabel: 'SW', dir: 'ltr' },
+  { code: 'cr', label: 'Kreol (Moris)', shortLabel: 'MFE', dir: 'ltr' },
+  { code: 'ur', label: 'Urdu', shortLabel: 'UR', dir: 'rtl' },
 ]
 
 const STORAGE_KEY = 'preferred_language'
