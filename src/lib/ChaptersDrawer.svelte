@@ -1,6 +1,7 @@
 <script>
     import { fly, fade } from 'svelte/transition'
     import { tick } from 'svelte'
+    import { ui } from '$lib/translations/index.js'
 
     /**
      * @typedef {Object} ChapterEntry
@@ -16,6 +17,7 @@
         chapters = /** @type {ChapterEntry[]} */ ([]),
         currentChapterId = 0,
         onSelect = /** @type {(chapterId: number) => void} */ (() => {}),
+        lang = 'en',
     } = $props()
 
     let filterQuery = $state('')
@@ -64,22 +66,35 @@
     }
 </script>
 
+<style>
+    /* Skip layout/paint of off-screen rows so Safari can start the slide
+       animation without first laying out all 372 chapter buttons. */
+    .chapter-row {
+        content-visibility: auto;
+        contain-intrinsic-size: 0 84px;
+    }
+</style>
+
 <svelte:window onkeydown={handleKeydown} />
 
 {#if open}
-    <!-- Backdrop -->
+    <!-- Backdrop. Solid overlay (no backdrop-blur) so iOS Safari can
+         composite this in a single frame; blur during the slide animation
+         was the main cause of perceived slowness on iPhone. -->
     <button
         type="button"
-        aria-label="Close contents"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-default"
+        aria-label={ui('closeContents', lang)}
+        class="fixed inset-0 bg-black/70 z-40 cursor-default"
         onclick={() => (open = false)}
         transition:fade={{ duration: 120 }}
     ></button>
 
-    <!-- Drawer -->
+    <!-- Drawer. will-change hints iOS to pre-allocate a GPU layer so the
+         translate doesn't stall during the first frame. -->
     <aside
-        aria-label="Table of contents"
+        aria-label={ui('tableOfContents', lang)}
         class="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-bg-card border-r border-white/10 shadow-2xl z-50 flex flex-col"
+        style="will-change: transform;"
         transition:fly={{ x: -360, duration: 160, opacity: 1 }}
     >
         <!-- Header -->
@@ -90,15 +105,15 @@
                 <p
                     class="text-[10px] uppercase tracking-[0.2em] text-text-dim font-bold"
                 >
-                    Contents
+                    {ui('contents', lang)}
                 </p>
                 <p class="text-sm text-text-main/80 mt-0.5">
-                    {chapters.length} chapters
+                    {chapters.length} {ui('chapters', lang)}
                 </p>
             </div>
             <button
                 onclick={() => (open = false)}
-                aria-label="Close contents"
+                aria-label={ui('closeContents', lang)}
                 class="p-2 text-text-dim hover:text-primary transition-colors cursor-pointer"
             >
                 <svg
@@ -123,7 +138,7 @@
                 <input
                     bind:value={filterQuery}
                     type="text"
-                    placeholder="Filter chapters..."
+                    placeholder={ui('filterChapters', lang)}
                     class="w-full bg-bg-dark border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-dim/50"
                 />
                 <svg
@@ -146,7 +161,7 @@
         <div bind:this={listEl} class="flex-1 overflow-y-auto">
             {#if filtered.length === 0}
                 <div class="p-6 text-center text-text-dim/50 text-sm italic">
-                    No chapters match "{filterQuery}"
+                    {ui('noChaptersMatch', lang)} "{filterQuery}"
                 </div>
             {:else}
                 {#each filtered as chapter (chapter.id)}
@@ -155,7 +170,7 @@
                         type="button"
                         data-chapter-id={chapter.id}
                         onclick={() => selectChapter(chapter.id)}
-                        class="cursor-pointer w-full text-left px-5 py-3 border-b border-white/5 hover:bg-white/5 transition-colors flex items-start gap-3 {isCurrent
+                        class="chapter-row cursor-pointer w-full text-left px-5 py-3 border-b border-white/5 hover:bg-white/5 transition-colors flex items-start gap-3 {isCurrent
                             ? 'bg-primary/10'
                             : ''}"
                     >

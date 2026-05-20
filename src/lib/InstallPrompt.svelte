@@ -1,6 +1,11 @@
 <script>
     import { browser } from '$app/environment'
     import { onMount } from 'svelte'
+    import { ui } from '$lib/translations/index.js'
+
+    let {
+        lang = 'en',
+    } = $props()
 
     let deferredPrompt = $state(null)
     let showInstallButton = $state(false)
@@ -81,7 +86,7 @@
     <button
         onclick={handleInstall}
         class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
-        title="Install App"
+        title={ui('installApp', lang)}
     >
         <svg
             class="w-5 h-5 md:w-6 md:h-6"
@@ -116,43 +121,43 @@
             onkeydown={(e) => e.stopPropagation()}
         >
             <h3 class="text-lg font-bold text-text-main text-center">
-                Install App
+                {ui('installApp', lang)}
             </h3>
 
             {#if isIOS}
                 <p class="text-sm text-text-dim text-center">
-                    To install this app on your iPhone/iPad:
+                    {ui('installIOS', lang)}
                 </p>
                 <ol class="space-y-3 text-sm text-text-main">
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">1</span>
-                        <span>Tap the <strong>Share</strong> button at the bottom</span>
+                        <span>{ui('installStep1IOS', lang)}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">2</span>
-                        <span>Scroll down and tap <strong>"Add to Home Screen"</strong></span>
+                        <span>{ui('installStep2IOS', lang)}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">3</span>
-                        <span>Tap <strong>"Add"</strong> to install</span>
+                        <span>{ui('installStep3IOS', lang)}</span>
                     </li>
                 </ol>
             {:else}
                 <p class="text-sm text-text-dim text-center">
-                    To install this app on your device:
+                    {ui('installAndroid', lang)}
                 </p>
                 <ol class="space-y-3 text-sm text-text-main">
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">1</span>
-                        <span>Tap the <strong>menu</strong> button (3 dots) in Chrome</span>
+                        <span>{ui('installStep1Android', lang)}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">2</span>
-                        <span>Tap <strong>"Install app"</strong> (not "Add to Home screen" — that creates a browser shortcut)</span>
+                        <span>{ui('installStep2Android', lang)}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <span class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0">3</span>
-                        <span>Tap <strong>"Install"</strong> to confirm</span>
+                        <span>{ui('installStep3Android', lang)}</span>
                     </li>
                 </ol>
             {/if}
@@ -161,7 +166,7 @@
                 onclick={closeInstructions}
                 class="w-full py-3 bg-primary text-bg-dark rounded-xl font-medium cursor-pointer hover:bg-primary-hover transition-colors"
             >
-                Got it
+                {ui('gotIt', lang)}
             </button>
         </div>
     </div>

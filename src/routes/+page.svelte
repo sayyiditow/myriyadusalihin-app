@@ -4,8 +4,37 @@
     import { searchHadiths } from '$lib/search.js'
     import InstallPrompt from '$lib/InstallPrompt.svelte'
     import ChaptersDrawer from '$lib/ChaptersDrawer.svelte'
+    import LanguageSwitcher from '$lib/LanguageSwitcher.svelte'
     import { onMount } from 'svelte'
     import { fly } from 'svelte/transition'
+    import {
+        loadTranslations,
+        applyTranslations,
+        getLanguagePreference,
+        saveLanguagePreference,
+        LANGUAGES,
+        ui,
+    } from '$lib/translations/index.js'
+
+    let lang = $state(getLanguagePreference())
+    let translations = $state(null)
+
+    // Load translations when language changes
+    $effect(() => {
+        loadTranslations(lang).then((t) => {
+            translations = t
+            saveLanguagePreference(lang)
+        })
+        // Sync html element attributes for current language
+        if (browser) {
+            const dir = LANGUAGES.find((l) => l.code === lang)?.dir ?? 'ltr'
+            document.documentElement.lang = lang
+            document.documentElement.dir = dir
+        }
+    })
+
+    // Apply translations to the canonical English data
+    let translatedContent = $derived(applyTranslations(riyadusSalihin, translations))
 
     let searchQuery = $state('')
     let previousSearchQuery = ''
@@ -13,32 +42,40 @@
     // Flatten all hadiths for easy navigation. isFirstInChapter lets the
     // reader render intro verses at the start of every chapter, not just
     // the very first hadith.
-    const allHadiths = riyadusSalihin.flatMap((chapter) =>
-        chapter.hadiths.map((h, idx) => ({
-            ...h,
-            chapterId: chapter.id,
-            chapterTitle: chapter.title,
-            arabicChapterTitle: chapter.arabicTitle,
-            introVerses: chapter.introVerses,
-            isFirstInChapter: idx === 0,
-        })),
+    let allHadiths = $derived(
+        translatedContent.flatMap((chapter) =>
+            chapter.hadiths.map((h, idx) => ({
+                ...h,
+                chapterId: chapter.id,
+                chapterTitle: chapter.title,
+                arabicChapterTitle: chapter.arabicTitle,
+                introVerses: chapter.introVerses,
+                isFirstInChapter: idx === 0,
+            })),
+        ),
     )
 
     // Compact chapter list for the drawer (title + arabic + hadith range).
-    const chapterEntries = riyadusSalihin.map((c) => ({
-        id: c.id,
-        title: c.title,
-        arabicTitle: c.arabicTitle,
-        firstNumber: c.hadiths[0]?.number ?? 0,
-        lastNumber: c.hadiths.at(-1)?.number ?? 0,
-    }))
+    let chapterEntries = $derived(
+        translatedContent.map((c) => ({
+            id: c.id,
+            title: c.title,
+            arabicTitle: c.arabicTitle,
+            firstNumber: c.hadiths[0]?.number ?? 0,
+            lastNumber: c.hadiths.at(-1)?.number ?? 0,
+        })),
+    )
+
 
     let chaptersOpen = $state(false)
+    // Peek mode: chapter taps view without overwriting the saved slot,
+    // mirroring how search behaves.
+    let chapterPeek = $state(false)
 
     let filteredHadiths = $derived(
         searchQuery.trim() === ''
             ? allHadiths
-            : searchHadiths(searchQuery, riyadusSalihin),
+            : searchHadiths(searchQuery, translatedContent),
     )
 
     let currentIndex = $state(0)
@@ -138,6 +175,7 @@
         }
 
         lastSavedHadith = hadithNumber
+        chapterPeek = false
 
         localStorage.setItem(
             STORAGE_KEY,
@@ -163,6 +201,7 @@
         )
         if (hadithIndex !== -1) {
             searchQuery = '' // Clear search
+            chapterPeek = false
             currentIndex = hadithIndex
         }
         showBookmarkMenu = false
@@ -176,10 +215,23 @@
         )
     }
 
-    // Save position whenever it changes (only when not searching)
+    // Save position whenever it changes (only when not searching/peeking)
     $effect(() => {
-        if (browser && searchQuery.trim() === '' && currentHadith) {
+        if (
+            browser &&
+            searchQuery.trim() === '' &&
+            !chapterPeek &&
+            currentHadith
+        ) {
             saveToSlot(currentHadith.number, currentHadith.chapterTitle)
+        }
+    })
+
+    // Searching is its own non-saving mode; clear peek so the search-clear
+    // logic owns slot creation from there.
+    $effect(() => {
+        if (browser && searchQuery.trim() !== '' && chapterPeek) {
+            chapterPeek = false
         }
     })
 
@@ -259,6 +311,7 @@
         const idx = allHadiths.findIndex((h) => h.number === firstNumber)
         if (idx === -1) return
         searchQuery = ''
+        chapterPeek = true
         currentIndex = idx
     }
 
@@ -294,7 +347,7 @@
 </script>
 
 <svelte:head>
-    <title>Home - Riyad-us-Salihin</title>
+    <title>{ui('pageTitleHome', lang)}</title>
 </svelte:head>
 <svelte:window onkeydown={handleKeydown} />
 
@@ -322,8 +375,8 @@
             <button
                 onclick={() => (chaptersOpen = true)}
                 class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
-                title="Table of contents"
-                aria-label="Open table of contents"
+                title={ui('tableOfContents', lang)}
+                aria-label={ui('openContents', lang)}
             >
                 <svg
                     class="w-5 h-5 md:w-6 md:h-6"
@@ -345,7 +398,7 @@
                 <input
                     type="text"
                     bind:value={searchQuery}
-                    placeholder="Search hadith..."
+                    placeholder={ui('searchPlaceholder', lang)}
                     class="w-full bg-bg-card border border-white/10 rounded-full py-3 md:py-4 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50"
                     oninput={() => (currentIndex = 0)}
                 />
@@ -369,7 +422,7 @@
                 <button
                     onclick={() => (showBookmarkMenu = !showBookmarkMenu)}
                     class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all relative cursor-pointer"
-                    title="Reading progress"
+                    title={ui('readingProgress', lang)}
                 >
                     <svg
                         class="w-5 h-5 md:w-6 md:h-6"
@@ -399,7 +452,7 @@
                             <p
                                 class="text-xs text-text-dim uppercase tracking-wider font-bold"
                             >
-                                Reading Progress
+                                {ui('readingProgress', lang)}
                             </p>
                         </div>
 
@@ -407,8 +460,7 @@
                             <div
                                 class="p-4 text-center text-text-dim/50 text-sm"
                             >
-                                No saved positions yet.<br />Start reading to
-                                auto-save.
+                                {ui('noSavedPositions', lang)}<br />{ui('startReadingAutoSave', lang)}
                             </div>
                         {:else}
                             <div class="max-h-48 overflow-y-auto">
@@ -430,7 +482,7 @@
                                                 <p
                                                     class="text-sm font-medium text-text-main truncate"
                                                 >
-                                                    Hadith #{slot.hadithNumber}
+                                                    {ui('hadithLabel', lang)} #{slot.hadithNumber}
                                                 </p>
                                                 <p
                                                     class="text-xs text-text-dim truncate"
@@ -441,7 +493,7 @@
                                             {#if i === activeSlotIndex}
                                                 <span
                                                     class="text-[8px] text-primary uppercase font-bold"
-                                                    >Active</span
+                                                    >{ui('active', lang)}</span
                                                 >
                                             {/if}
                                         </div>
@@ -477,16 +529,15 @@
                                         ></path>
                                     </svg>
                                     {readingSlots.length < MAX_SLOTS
-                                        ? 'Start new reading slot'
-                                        : 'Replace oldest slot'}
+                                        ? ui('startNewSlot', lang)
+                                        : ui('replaceOldestSlot', lang)}
                                 </button>
                             </div>
                         {/if}
 
                         <div class="p-2 border-t border-white/10 bg-white/2">
                             <p class="text-[10px] text-text-dim/50 text-center">
-                                {readingSlots.length}/{MAX_SLOTS} slots used. Active
-                                slot auto-updates as you read.
+                                {readingSlots.length}/{MAX_SLOTS} {ui('slotsUsed', lang)}
                             </p>
                         </div>
                     </div>
@@ -497,7 +548,7 @@
             <a
                 href="/about"
                 class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
-                title="About this collection"
+                title={ui('aboutThisCollection', lang)}
             >
                 <svg
                     class="w-5 h-5 md:w-6 md:h-6"
@@ -515,7 +566,10 @@
             </a>
 
             <!-- Install App -->
-            <InstallPrompt />
+            <InstallPrompt {lang} />
+
+            <!-- Language Switcher -->
+            <LanguageSwitcher bind:lang />
         </div>
     </header>
 
@@ -576,7 +630,7 @@
                         <h2
                             class="text-lg md:text-2xl font-semibold border-b border-white/5 pb-1"
                         >
-                            Hadith #{currentHadith.number}
+                            {ui('hadithLabel', lang)} #{currentHadith.number}
                         </h2>
 
                         <div class="text-right -mt-3">
@@ -607,7 +661,7 @@
                                 <p
                                     class="text-[10px] text-primary mb-2 uppercase font-mono font-bold"
                                 >
-                                    Commentary
+                                    {ui('commentary', lang)}
                                 </p>
                                 <div
                                     class="text-sm md:text-base text-text-main/80 leading-relaxed font-light"
@@ -640,15 +694,18 @@
             {/key}
         </div>
 
-        <!-- Navigation -->
+        <!-- Navigation. Hidden while the chapters drawer is open so Safari
+             isn't recomputing the nav's backdrop-blur every frame during
+             the drawer's slide-in. -->
         <nav
-            aria-label="Hadith navigation"
+            aria-label={ui('hadithNavigation', lang)}
+            class:hidden={chaptersOpen}
             class="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 md:gap-12 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 px-6 py-3 md:px-10 md:py-5 rounded-full shadow-2xl z-50"
         >
             <button
                 onclick={prevHadith}
                 disabled={currentIndex === 0}
-                aria-label="Previous hadith"
+                aria-label={ui('previousHadith', lang)}
                 class="text-text-dim hover:text-primary disabled:opacity-10 transition-colors p-1 cursor-pointer"
             >
                 <svg
@@ -675,16 +732,24 @@
                         >/ {filteredHadiths.length}</span
                     >
                 </div>
-                <span
-                    class="text-[8px] uppercase tracking-widest text-text-dim/40 mt-0.5"
-                    >HADITH</span
-                >
+                {#if chapterPeek || searchQuery.trim() !== ''}
+                    <span
+                        class="text-[8px] uppercase tracking-widest text-primary/70 italic mt-0.5"
+                        title={ui('progressNotSaved', lang)}
+                        >{ui('browsing', lang)}</span
+                    >
+                {:else}
+                    <span
+                        class="text-[8px] uppercase tracking-widest text-text-dim/40 mt-0.5"
+                        >{ui('hadithLabel', lang)}</span
+                    >
+                {/if}
             </div>
 
             <button
                 onclick={nextHadith}
                 disabled={currentIndex >= filteredHadiths.length - 1}
-                aria-label="Next hadith"
+                aria-label={ui('nextHadith', lang)}
                 class="text-text-dim hover:text-primary disabled:opacity-10 transition-colors p-1 cursor-pointer"
             >
                 <svg
@@ -705,14 +770,14 @@
     {:else}
         <div class="mt-40 text-center space-y-6">
             <p class="text-xl text-text-dim/40 italic">
-                "No matches found for your search"
+                "{ui('noMatches', lang)}"
             </p>
             <button
                 onclick={() => (searchQuery = '')}
-                aria-label="Clear filter"
+                aria-label={ui('clearFilter', lang)}
                 class="bg-primary/10 text-primary px-6 py-2 rounded-full text-sm border border-primary/20 hover:bg-primary/20 transition-all font-medium"
             >
-                Clear filter
+                {ui('clearFilter', lang)}
             </button>
         </div>
     {/if}
@@ -723,6 +788,7 @@
     chapters={chapterEntries}
     currentChapterId={currentHadith?.chapterId ?? 0}
     onSelect={jumpToChapter}
+    {lang}
 />
 
 <style>

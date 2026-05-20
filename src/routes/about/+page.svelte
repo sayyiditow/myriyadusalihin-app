@@ -1,9 +1,25 @@
 <script>
     import { fly } from 'svelte/transition'
+    import {
+        getLanguagePreference,
+        LANGUAGES,
+        ui,
+    } from '$lib/translations/index.js'
+    import { browser } from '$app/environment'
+
+    let lang = $state(getLanguagePreference())
+
+    $effect(() => {
+        if (browser) {
+            const dir = LANGUAGES.find((l) => l.code === lang)?.dir ?? 'ltr'
+            document.documentElement.lang = lang
+            document.documentElement.dir = dir
+        }
+    })
 </script>
 
 <svelte:head>
-    <title>About - Riyad-us-Salihin</title>
+    <title>{ui('pageTitleAbout', lang)}</title>
 </svelte:head>
 
 <div
@@ -28,7 +44,7 @@
                 d="M15 19l-7-7 7-7"
             ></path>
         </svg>
-        <span class="text-sm">Back to Hadiths</span>
+        <span class="text-sm">{ui('backToHadiths', lang)}</span>
     </a>
 
     <!-- Page Title -->
@@ -36,7 +52,7 @@
         <h1
             class="text-2xl md:text-4xl font-bold bg-linear-to-r from-primary to-primary-hover bg-clip-text text-transparent"
         >
-            About This Collection
+            {ui('aboutTitle', lang)}
         </h1>
         <p class="arabic text-xl md:text-2xl text-primary/60 mt-2">
             عن هذا الكتاب
@@ -66,17 +82,15 @@
                 </div>
                 <div>
                     <h2 class="text-lg md:text-xl font-semibold text-text-main">
-                        Riyad-us-Salihin
+                        {ui('aboutTheBook', lang)}
                     </h2>
                     <p class="arabic text-primary/70">رياض الصالحين</p>
                 </div>
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                <strong class="text-primary">Riyad-us-Salihin</strong> (Gardens of
-                the Righteous) is one of the most widely read and influential collections
-                of hadith in the Islamic world. Compiled in the 13th century CE,
-                it remains a cornerstone of Islamic literature and spiritual guidance.
+                <strong class="text-primary">{ui('aboutTheBook', lang)}</strong>
+                {ui('aboutDesc1', lang)}
             </p>
 
             <div class="grid grid-cols-3 gap-4 py-4">
@@ -84,19 +98,19 @@
                     <p class="text-2xl md:text-3xl font-bold text-primary">
                         1896
                     </p>
-                    <p class="text-xs md:text-sm text-text-dim">Hadiths</p>
+                    <p class="text-xs md:text-sm text-text-dim">{ui('hadiths', lang)}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-2xl md:text-3xl font-bold text-primary">
                         372
                     </p>
-                    <p class="text-xs md:text-sm text-text-dim">Chapters</p>
+                    <p class="text-xs md:text-sm text-text-dim">{ui('chapters_', lang)}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-2xl md:text-3xl font-bold text-primary">
                         19
                     </p>
-                    <p class="text-xs md:text-sm text-text-dim">Books</p>
+                    <p class="text-xs md:text-sm text-text-dim">{ui('books', lang)}</p>
                 </div>
             </div>
 
@@ -132,7 +146,7 @@
                 </div>
                 <div>
                     <h2 class="text-lg md:text-xl font-semibold text-text-main">
-                        Imam An-Nawawi <span
+                        {ui('authorTitle', lang)} <span
                             class="arabic text-base font-normal"
                             >(رَحِمَهُ اللهُ)</span
                         >
@@ -236,10 +250,10 @@
                 </div>
                 <div>
                     <h2 class="text-lg md:text-xl font-semibold text-text-main">
-                        Translation & Commentary
+                        {ui('translationLabel', lang)}
                     </h2>
                     <p class="text-xs text-text-dim">
-                        English rendering and scholarly notes
+                        {ui('translationDesc', lang)}
                     </p>
                 </div>
             </div>
@@ -321,9 +335,9 @@
                 </div>
                 <div>
                     <h2 class="text-lg md:text-xl font-semibold text-text-main">
-                        Acknowledgments
+                        {ui('acknowledgments', lang)}
                     </h2>
-                    <p class="text-xs text-text-dim">With gratitude</p>
+                    <p class="text-xs text-text-dim">{ui('withGratitude', lang)}</p>
                 </div>
             </div>
 
@@ -382,8 +396,8 @@
 
         <!-- Footer -->
         <footer class="text-center py-2 text-text-dim/50 text-xs space-y-2">
-            <p>This is a free resource for the Muslim community.</p>
-            <p>All praise is due to Allah, Lord of the worlds.</p>
+            <p>{ui('freeResource', lang)}</p>
+            <p>{ui('allPraise', lang)}</p>
         </footer>
     </div>
 </div>
