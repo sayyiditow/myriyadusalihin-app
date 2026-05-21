@@ -356,7 +356,7 @@
     class="max-w-2xl mx-auto px-4 py-6 md:py-12 min-h-screen flex flex-col items-center gap-2 md:gap-4"
 >
     <!-- Header & Search -->
-    <header class="w-full text-center mb-1">
+    <header class="w-full text-center mb-1" dir="ltr">
         <h1
             class="text-2xl md:text-4xl font-bold bg-linear-to-r from-primary to-primary-hover bg-clip-text text-transparent flex items-center justify-center gap-2 md:gap-3"
         >
@@ -700,6 +700,7 @@
         <nav
             aria-label={ui('hadithNavigation', lang)}
             class:hidden={chaptersOpen}
+            dir="ltr"
             class="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 md:gap-12 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 px-6 py-3 md:px-10 md:py-5 rounded-full shadow-2xl z-50"
         >
             <button

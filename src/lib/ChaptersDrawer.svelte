@@ -93,6 +93,7 @@
          translate doesn't stall during the first frame. -->
     <aside
         aria-label={ui('tableOfContents', lang)}
+        dir="ltr"
         class="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-bg-card border-r border-white/10 shadow-2xl z-50 flex flex-col"
         style="will-change: transform;"
         transition:fly={{ x: -360, duration: 160, opacity: 1 }}
