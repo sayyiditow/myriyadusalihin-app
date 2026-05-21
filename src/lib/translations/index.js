@@ -12,9 +12,6 @@
 export const LANGUAGES = [
   { code: 'en', label: 'English', shortLabel: 'EN', dir: 'ltr' },
   { code: 'tr', label: 'Türkçe', shortLabel: 'TR', dir: 'ltr' },
-  { code: 'fr', label: 'Français', shortLabel: 'FR', dir: 'ltr' },
-  { code: 'sw', label: 'Kiswahili', shortLabel: 'SW', dir: 'ltr' },
-  { code: 'cr', label: 'Kreol (Moris)', shortLabel: 'MFE', dir: 'ltr' },
   { code: 'ur', label: 'Urdu', shortLabel: 'UR', dir: 'rtl' },
 ]
 
