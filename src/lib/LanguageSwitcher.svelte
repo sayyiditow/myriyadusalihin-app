@@ -27,7 +27,7 @@
     })
 </script>
 
-<div bind:this={menuRef} class="relative">
+<div bind:this={menuRef} class="relative" dir="ltr">
     <button
         onclick={() => (open = !open)}
         class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer text-xs md:text-sm font-medium"
