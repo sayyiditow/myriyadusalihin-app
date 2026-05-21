@@ -311,6 +311,43 @@
                 contemporary readers, explaining the practical application of
                 each hadith in daily life.
             </p>
+
+            <!-- Turkish Sources -->
+            <div class="border-t border-white/10 pt-4 space-y-3">
+                <p class="text-sm font-semibold text-text-main">
+                    Türkçe Çeviri Kaynakları
+                </p>
+
+                <div class="bg-primary/5 p-4 rounded-xl border border-primary/10 space-y-3">
+                    <p class="text-xs text-primary mb-2 uppercase font-mono font-bold">
+                        Hadis Metni (1–163)
+                    </p>
+                    <div class="text-sm text-text-main/80 space-y-1">
+                        <p><strong>Riyâzü's-Sâlihîn Metin ve Çeviri</strong></p>
+                        <p class="text-text-dim">Diyanet İşleri Başkanlığı Yayınları, Ankara</p>
+                    </div>
+                </div>
+
+                <div class="bg-primary/5 p-4 rounded-xl border border-primary/10 space-y-3">
+                    <p class="text-xs text-primary mb-2 uppercase font-mono font-bold">
+                        Hadis Metni (164–1896)
+                    </p>
+                    <div class="text-sm text-text-main/80 space-y-1">
+                        <p><strong>Riyad Us Salihin</strong></p>
+                        <p class="text-text-dim">2 Cilt (Hadis 1–1896)</p>
+                        <p class="text-text-dim">Darussalam Publishers</p>
+                    </div>
+                </div>
+
+                <div class="bg-primary/5 p-4 rounded-xl border border-primary/10 space-y-3">
+                    <p class="text-xs text-primary mb-2 uppercase font-mono font-bold">
+                        Şerh (Yorum)
+                    </p>
+                    <div class="text-sm text-text-main/80 space-y-1">
+                        <p>Muslims At Work Publications İngilizce şerhinden yapay zeka destekli Türkçe çeviri</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Acknowledgments -->
