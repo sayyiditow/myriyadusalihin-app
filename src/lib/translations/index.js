@@ -21,14 +21,27 @@ const STORAGE_KEY = 'preferred_language'
 const translationCache = {}
 
 /**
+ * Per-language loaders. Each is a static `import()` so Rollup can
+ * code-split the JSON into its own lazy chunk and emit it in the
+ * production build. A template-literal import (`./${lang}.json`) is
+ * NOT analyzable by Vite and silently fails to bundle in prod.
+ */
+const translationLoaders = {
+  tr: () => import('./tr.json'),
+  ur: () => import('./ur.json'),
+}
+
+/**
  * Load translation data for a given language code.
- * @param {'en'|'tr'|'fr'|'sw'|'cr'|'ur'} lang
+ * @param {'en'|'tr'|'ur'} lang
  * @returns {Promise<object|null>} Translation data, or null for English
  */
 export async function loadTranslations(lang) {
   if (lang === 'en') return null
   if (translationCache[lang]) return translationCache[lang]
-  const mod = await import(`./${lang}.json`)
+  const loader = translationLoaders[lang]
+  if (!loader) return null
+  const mod = await loader()
   translationCache[lang] = mod.default
   return translationCache[lang]
 }
