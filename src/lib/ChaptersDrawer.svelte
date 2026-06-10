@@ -140,11 +140,11 @@
                     bind:value={filterQuery}
                     type="text"
                     placeholder={ui('filterChapters', lang)}
-                    class="w-full bg-bg-dark border border-white/10 rounded-full py-2.5 {lang === 'ur' ? 'pr-4 pl-10 text-right' : 'pl-10 pr-4'} text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-dim/50"
+                    class="w-full bg-bg-dark border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right' : ''}"
                     dir={lang === 'ur' ? 'rtl' : 'ltr'}
                 />
                 <svg
-                    class="absolute {lang === 'ur' ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim/50"
+                    class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim/50"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -188,7 +188,7 @@
                             <span
                                 class="block text-sm font-medium {isCurrent
                                     ? 'text-primary'
-                                    : 'text-text-main'} line-clamp-2"
+                                    : 'text-text-main'} line-clamp-2 {lang === 'ur' ? 'arabic-nastaliq' : ''}"
                             >
                                 {chapter.title.replace(/^Chapter \d+:\s*/, '')}
                             </span>

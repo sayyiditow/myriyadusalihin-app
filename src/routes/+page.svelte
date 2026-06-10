@@ -399,7 +399,7 @@
                     type="text"
                     bind:value={searchQuery}
                     placeholder={ui('searchPlaceholder', lang)}
-                    class="w-full bg-bg-card border border-white/10 rounded-full py-3 md:py-4 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right' : ''}"
+                    class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
                     oninput={() => (currentIndex = 0)}
                     dir={lang === 'ur' ? 'rtl' : 'ltr'}
                 />
@@ -617,7 +617,7 @@
                                         — {verse.reference}
                                     </p>
                                     <p
-                                        class="text-text-dim italic text-sm md:text-base leading-relaxed font-light {lang === 'ur' ? 'text-right' : ''}"
+                                        class="{lang === 'ur' ? 'arabic-nastaliq' : 'text-text-dim'} italic text-sm md:text-base leading-relaxed font-light {lang === 'ur' ? 'text-right' : ''}"
                                     >
                                         {verse.englishText}
                                     </p>

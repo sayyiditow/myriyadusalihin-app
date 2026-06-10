@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gulzar&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 
@@ -26,10 +26,21 @@ body {
     overflow-x: hidden;
 }
 
+/* Add Gulzar as an option for Urdu content */
+.arabic-nastaliq {
+    font-family: 'Gulzar', serif !important;
+    line-height: 2.2;
+}
+
 .arabic {
     font-family: 'Noto Naskh Arabic', serif;
     direction: rtl;
     line-height: 2.2;
+}
+
+.search-input-nastaliq {
+    font-family: 'Gulzar', serif !important;
+    font-size: 1.1rem;
 }
 
 .translation-text,
