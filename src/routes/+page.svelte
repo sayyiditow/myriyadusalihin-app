@@ -363,7 +363,7 @@
             <span>Riyad-us-Salihin</span>
             <span class="text-primary/10 text-xl font-light">|</span>
             <span class="arabic text-2xl md:text-3xl text-primary/80"
-                >رياض الصالحين</span
+                >رياض الصالحین</span
             >
         </h1>
 
@@ -399,8 +399,9 @@
                     type="text"
                     bind:value={searchQuery}
                     placeholder={ui('searchPlaceholder', lang)}
-                    class="w-full bg-bg-card border border-white/10 rounded-full py-3 md:py-4 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50"
+                    class="w-full bg-bg-card border border-white/10 rounded-full py-3 md:py-4 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right' : ''}"
                     oninput={() => (currentIndex = 0)}
+                    dir={lang === 'ur' ? 'rtl' : 'ltr'}
                 />
                 <svg
                     class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-dim/50"
@@ -581,7 +582,7 @@
                     class="glass-card p-6 md:p-10 shadow-2xl space-y-8"
                 >
                     <!-- Metadata: Chapter Info Only -->
-                    <div class="space-y-4 border-l-2 border-primary pl-4">
+                    <div class="space-y-4 {lang === 'ur' ? 'border-r-2 pr-4 text-right' : 'border-l-2 pl-4'} border-primary">
                         <div class="space-y-1">
                             <span
                                 class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-hadith font-bold"
@@ -590,7 +591,7 @@
                             </span>
                             {#if currentHadith.arabicChapterTitle}
                                 <p
-                                    class="arabic text-sm md:text-lg text-primary/60 text-left line-clamp-1"
+                                    class="arabic text-sm md:text-lg text-primary/60 {lang === 'ur' ? 'text-right' : 'text-left'} line-clamp-1"
                                 >
                                     {currentHadith.arabicChapterTitle}
                                 </p>
@@ -616,7 +617,7 @@
                                         — {verse.reference}
                                     </p>
                                     <p
-                                        class="text-text-dim italic text-sm md:text-base leading-relaxed font-light"
+                                        class="text-text-dim italic text-sm md:text-base leading-relaxed font-light {lang === 'ur' ? 'text-right' : ''}"
                                     >
                                         {verse.englishText}
                                     </p>
@@ -628,7 +629,7 @@
                     <!-- Hadith Content -->
                     <div class="flex flex-col gap-4 md:gap-6">
                         <h2
-                            class="text-lg md:text-2xl font-semibold border-b border-white/5 pb-1"
+                            class="text-lg md:text-2xl font-semibold border-b border-white/5 pb-1 {lang === 'ur' ? 'text-right' : ''}"
                         >
                             {ui('hadithLabel', lang)} #{currentHadith.number}
                         </h2>
@@ -641,14 +642,14 @@
                             </p>
                         </div>
 
-                        <div class="space-y-4">
+                        <div class="space-y-4 {lang === 'ur' ? 'text-right' : ''}">
                             <p
                                 class="text-[10px] md:text-xs text-primary tracking-[0.2em] font-bold uppercase"
                             >
                                 {currentHadith.narrator}
                             </p>
                             <p
-                                class="text-sm md:text-base leading-relaxed text-text-main font-light italic opacity-80"
+                                class="translation-text text-sm md:text-base leading-relaxed text-text-main font-light italic opacity-80"
                             >
                                 {currentHadith.englishText}
                             </p>
@@ -656,7 +657,7 @@
 
                         {#if currentHadith.commentary}
                             <div
-                                class="bg-primary/5 p-4 md:p-6 rounded-xl border border-primary/10"
+                                class="bg-primary/5 p-4 md:p-6 rounded-xl border border-primary/10 {lang === 'ur' ? 'text-right' : ''}"
                             >
                                 <p
                                     class="text-[10px] text-primary mb-2 uppercase font-mono font-bold"
@@ -664,7 +665,7 @@
                                     {ui('commentary', lang)}
                                 </p>
                                 <div
-                                    class="text-sm md:text-base text-text-main/80 leading-relaxed font-light"
+                                    class="commentary-text text-sm md:text-base text-text-main/80 leading-relaxed font-light"
                                 >
                                     {@html currentHadith.commentary}
                                 </div>

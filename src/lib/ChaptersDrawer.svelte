@@ -102,7 +102,7 @@
         <div
             class="flex items-center justify-between px-5 py-4 border-b border-white/10"
         >
-            <div>
+            <div class={lang === 'ur' ? 'text-right flex-1 pr-2' : ''} dir={lang === 'ur' ? 'rtl' : 'ltr'}>
                 <p
                     class="text-[10px] uppercase tracking-[0.2em] text-text-dim font-bold"
                 >
@@ -140,10 +140,11 @@
                     bind:value={filterQuery}
                     type="text"
                     placeholder={ui('filterChapters', lang)}
-                    class="w-full bg-bg-dark border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-dim/50"
+                    class="w-full bg-bg-dark border border-white/10 rounded-full py-2.5 {lang === 'ur' ? 'pr-4 pl-10 text-right' : 'pl-10 pr-4'} text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-dim/50"
+                    dir={lang === 'ur' ? 'rtl' : 'ltr'}
                 />
                 <svg
-                    class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim/50"
+                    class="absolute {lang === 'ur' ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim/50"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -174,15 +175,16 @@
                         class="chapter-row cursor-pointer w-full text-left px-5 py-3 border-b border-white/5 hover:bg-white/5 transition-colors flex items-start gap-3 {isCurrent
                             ? 'bg-primary/10'
                             : ''}"
+                        dir={lang === 'ur' ? 'rtl' : 'ltr'}
                     >
                         <span
-                            class="text-xs font-mono shrink-0 mt-0.5 w-8 text-right {isCurrent
+                            class="text-xs font-mono shrink-0 mt-0.5 w-8 {lang === 'ur' ? 'text-left' : 'text-right'} {isCurrent
                                 ? 'text-primary'
                                 : 'text-text-dim/40'}"
                         >
                             {chapter.id}.
                         </span>
-                        <span class="flex-1 min-w-0">
+                        <span class="flex-1 min-w-0 {lang === 'ur' ? 'text-right' : ''}">
                             <span
                                 class="block text-sm font-medium {isCurrent
                                     ? 'text-primary'
@@ -192,7 +194,7 @@
                             </span>
                             <span class="flex items-baseline justify-between gap-2 mt-1.5">
                                 <span
-                                    class="arabic text-sm text-primary/70 line-clamp-1 text-left"
+                                    class="arabic text-sm text-primary/70 line-clamp-1 {lang === 'ur' ? 'text-right' : 'text-left'}"
                                 >
                                     {chapter.arabicTitle}
                                 </span>

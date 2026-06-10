@@ -32,6 +32,17 @@ body {
     line-height: 2.2;
 }
 
+.translation-text,
+.commentary-text {
+    font-family: 'Outfit', 'Noto Naskh Arabic', sans-serif !important;
+}
+
+/* Prevent Arabic honorifics from distorting when the paragraph is italicised in Urdu mode */
+:lang(ur) .translation-text,
+:lang(ur) .commentary-text {
+    font-style: normal; /* Italics break the height of complex Arabic symbols in some fonts */
+}
+
 .glass-card {
     background: var(--color-bg-card);
     border: 1px solid rgba(255, 255, 255, 0.1);
