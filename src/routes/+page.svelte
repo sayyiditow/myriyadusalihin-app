@@ -369,208 +369,214 @@
 
         <!-- Search Row with Bookmark -->
         <div
-            class="flex items-center gap-2 w-full max-w-2xl mx-auto mb-2 md:mb-6"
+            class="flex flex-col gap-2 md:flex-row md:items-center w-full max-w-2xl mx-auto mb-2 md:mb-6"
         >
-            <!-- Contents Drawer Trigger (leading) -->
-            <button
-                onclick={() => (chaptersOpen = true)}
-                class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
-                title={ui('tableOfContents', lang)}
-                aria-label={ui('openContents', lang)}
-            >
-                <svg
-                    class="w-5 h-5 md:w-6 md:h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h10"
-                    ></path>
-                </svg>
-            </button>
+            <!-- Utility buttons: top row on mobile, right side on desktop -->
+            <div class="flex items-center gap-2 justify-end order-1 md:order-2">
+                <!-- Reading Progress Bookmark Button -->
+                <div bind:this={bookmarkRef} class="relative">
+                    <button
+                        onclick={() => (showBookmarkMenu = !showBookmarkMenu)}
+                        class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all relative cursor-pointer"
+                        title={ui('readingProgress', lang)}
+                    >
+                        <svg
+                            class="w-5 h-5 md:w-6 md:h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                            ></path>
+                        </svg>
+                        {#if readingSlots.length > 0}
+                            <span
+                                class="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-primary text-bg-dark text-[10px] md:text-xs font-bold rounded-full flex items-center justify-center"
+                            >
+                                {readingSlots.length}
+                            </span>
+                        {/if}
+                    </button>
 
-            <!-- Search Input -->
-            <div class="relative flex-1">
-                <input
-                    type="text"
-                    bind:value={searchQuery}
-                    placeholder={ui('searchPlaceholder', lang)}
-                    class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
-                    oninput={() => (currentIndex = 0)}
-                    dir={lang === 'ur' ? 'rtl' : 'ltr'}
-                />
-                <svg
-                    class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-dim/50"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    ></path>
-                </svg>
-            </div>
+                    <!-- Dropdown Menu -->
+                    {#if showBookmarkMenu}
+                        <div
+                            class="absolute right-0 top-full mt-2 w-64 md:w-72 bg-bg-card border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                            in:fly={{ y: -10, duration: 200 }}
+                        >
+                            <div class="p-3 border-b border-white/10">
+                                <p
+                                    class="text-xs text-text-dim uppercase tracking-wider font-bold"
+                                >
+                                    {ui('readingProgress', lang)}
+                                </p>
+                            </div>
 
-            <!-- Reading Progress Bookmark Button -->
-            <div bind:this={bookmarkRef} class="relative">
-                <button
-                    onclick={() => (showBookmarkMenu = !showBookmarkMenu)}
-                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all relative cursor-pointer"
-                    title={ui('readingProgress', lang)}
+                            {#if readingSlots.length === 0}
+                                <div
+                                    class="p-4 text-center text-text-dim/50 text-sm"
+                                >
+                                    {ui('noSavedPositions', lang)}<br />{ui('startReadingAutoSave', lang)}
+                                </div>
+                            {:else}
+                                <div class="max-h-48 overflow-y-auto">
+                                    {#each readingSlots as slot, i}
+                                        <button
+                                            onclick={() => goToSlot(i)}
+                                            class="cursor-pointer w-full p-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0 {i ===
+                                            activeSlotIndex
+                                                ? 'bg-primary/10'
+                                                : ''}"
+                                        >
+                                            <div class="flex items-center gap-3">
+                                                <span
+                                                    class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0"
+                                                >
+                                                    {i + 1}
+                                                </span>
+                                                <div class="flex-1 min-w-0">
+                                                    <p
+                                                        class="text-sm font-medium text-text-main truncate"
+                                                    >
+                                                        {ui('hadithLabel', lang)} #{slot.hadithNumber}
+                                                    </p>
+                                                    <p
+                                                        class="text-xs text-text-dim truncate"
+                                                    >
+                                                        {slot.chapter}
+                                                    </p>
+                                                </div>
+                                                {#if i === activeSlotIndex}
+                                                    <span
+                                                        class="text-[8px] text-primary uppercase font-bold"
+                                                        >{ui('active', lang)}</span
+                                                    >
+                                                {/if}
+                                            </div>
+                                        </button>
+                                    {/each}
+                                </div>
+                            {/if}
+
+                            <!-- New Slot Button -->
+                            {#if currentHadith}
+                                <div class="p-2 border-t border-white/10">
+                                    <button
+                                        onclick={() => {
+                                            createNewSlot(
+                                                currentHadith.number,
+                                                currentHadith.chapterTitle,
+                                            )
+                                            showBookmarkMenu = false
+                                        }}
+                                        class="cursor-pointer w-full py-2 px-3 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <svg
+                                            class="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 4v16m8-8H4"
+                                            ></path>
+                                        </svg>
+                                        {readingSlots.length < MAX_SLOTS
+                                            ? ui('startNewSlot', lang)
+                                            : ui('replaceOldestSlot', lang)}
+                                    </button>
+                                </div>
+                            {/if}
+
+                            <div class="p-2 border-t border-white/10 bg-white/2">
+                                <p class="text-[10px] text-text-dim/50 text-center">
+                                    {readingSlots.length}/{MAX_SLOTS} {ui('slotsUsed', lang)}
+                                </p>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- About Link -->
+                <a
+                    href="/about"
+                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
+                    title={ui('aboutThisCollection', lang)}
                 >
                     <svg
                         class="w-5 h-5 md:w-6 md:h-6"
-                        fill="currentColor"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
                         <path
-                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                     </svg>
-                    {#if readingSlots.length > 0}
-                        <span
-                            class="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-primary text-bg-dark text-[10px] md:text-xs font-bold rounded-full flex items-center justify-center"
-                        >
-                            {readingSlots.length}
-                        </span>
-                    {/if}
-                </button>
+                </a>
 
-                <!-- Dropdown Menu -->
-                {#if showBookmarkMenu}
-                    <div
-                        class="absolute right-0 top-full mt-2 w-64 md:w-72 bg-bg-card border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
-                        in:fly={{ y: -10, duration: 200 }}
-                    >
-                        <div class="p-3 border-b border-white/10">
-                            <p
-                                class="text-xs text-text-dim uppercase tracking-wider font-bold"
-                            >
-                                {ui('readingProgress', lang)}
-                            </p>
-                        </div>
+                <!-- Install App -->
+                <InstallPrompt {lang} />
 
-                        {#if readingSlots.length === 0}
-                            <div
-                                class="p-4 text-center text-text-dim/50 text-sm"
-                            >
-                                {ui('noSavedPositions', lang)}<br />{ui('startReadingAutoSave', lang)}
-                            </div>
-                        {:else}
-                            <div class="max-h-48 overflow-y-auto">
-                                {#each readingSlots as slot, i}
-                                    <button
-                                        onclick={() => goToSlot(i)}
-                                        class="cursor-pointer w-full p-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0 {i ===
-                                        activeSlotIndex
-                                            ? 'bg-primary/10'
-                                            : ''}"
-                                    >
-                                        <div class="flex items-center gap-3">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center shrink-0"
-                                            >
-                                                {i + 1}
-                                            </span>
-                                            <div class="flex-1 min-w-0">
-                                                <p
-                                                    class="text-sm font-medium text-text-main truncate"
-                                                >
-                                                    {ui('hadithLabel', lang)} #{slot.hadithNumber}
-                                                </p>
-                                                <p
-                                                    class="text-xs text-text-dim truncate"
-                                                >
-                                                    {slot.chapter}
-                                                </p>
-                                            </div>
-                                            {#if i === activeSlotIndex}
-                                                <span
-                                                    class="text-[8px] text-primary uppercase font-bold"
-                                                    >{ui('active', lang)}</span
-                                                >
-                                            {/if}
-                                        </div>
-                                    </button>
-                                {/each}
-                            </div>
-                        {/if}
-
-                        <!-- New Slot Button -->
-                        {#if currentHadith}
-                            <div class="p-2 border-t border-white/10">
-                                <button
-                                    onclick={() => {
-                                        createNewSlot(
-                                            currentHadith.number,
-                                            currentHadith.chapterTitle,
-                                        )
-                                        showBookmarkMenu = false
-                                    }}
-                                    class="cursor-pointer w-full py-2 px-3 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M12 4v16m8-8H4"
-                                        ></path>
-                                    </svg>
-                                    {readingSlots.length < MAX_SLOTS
-                                        ? ui('startNewSlot', lang)
-                                        : ui('replaceOldestSlot', lang)}
-                                </button>
-                            </div>
-                        {/if}
-
-                        <div class="p-2 border-t border-white/10 bg-white/2">
-                            <p class="text-[10px] text-text-dim/50 text-center">
-                                {readingSlots.length}/{MAX_SLOTS} {ui('slotsUsed', lang)}
-                            </p>
-                        </div>
-                    </div>
-                {/if}
+                <!-- Language Switcher -->
+                <LanguageSwitcher bind:lang />
             </div>
 
-            <!-- About Link -->
-            <a
-                href="/about"
-                class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
-                title={ui('aboutThisCollection', lang)}
-            >
-                <svg
-                    class="w-5 h-5 md:w-6 md:h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            <!-- Drawer + search: bottom row on mobile, left side on desktop -->
+            <div class="flex items-center gap-2 flex-1 order-2 md:order-1">
+                <!-- Contents Drawer Trigger (leading) -->
+                <button
+                    onclick={() => (chaptersOpen = true)}
+                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
+                    title={ui('tableOfContents', lang)}
+                    aria-label={ui('openContents', lang)}
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                </svg>
-            </a>
+                    <svg
+                        class="w-5 h-5 md:w-6 md:h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h10"
+                        ></path>
+                    </svg>
+                </button>
 
-            <!-- Install App -->
-            <InstallPrompt {lang} />
-
-            <!-- Language Switcher -->
-            <LanguageSwitcher bind:lang />
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <input
+                        type="text"
+                        bind:value={searchQuery}
+                        placeholder={ui('searchPlaceholder', lang)}
+                        class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
+                        oninput={() => (currentIndex = 0)}
+                        dir={lang === 'ur' ? 'rtl' : 'ltr'}
+                    />
+                    <svg
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-dim/50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
         </div>
     </header>
 
