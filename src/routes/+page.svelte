@@ -618,6 +618,7 @@
                                     </p>
                                     <p
                                         class="{lang === 'ur' ? 'arabic-nastaliq' : 'text-text-dim'} italic text-sm md:text-base leading-relaxed font-light {lang === 'ur' ? 'text-right' : ''}"
+                                        dir={lang === 'ur' ? 'rtl' : 'ltr'}
                                     >
                                         {verse.englishText}
                                     </p>
