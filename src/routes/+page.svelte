@@ -91,6 +91,9 @@
     let showBookmarkMenu = $state(false)
     /** @type {HTMLDivElement | undefined} */
     let bookmarkRef = $state()
+    let showMoreMenu = $state(false)
+    /** @type {HTMLDivElement | undefined} */
+    let moreMenuRef = $state()
     let lastSavedHadith = -1 // Track to avoid infinite loops
     let isRestored = false // Prevent saving until after restoration
 
@@ -332,6 +335,23 @@
         return () => document.removeEventListener('click', onDocClick)
     })
 
+    // Close more-options menu on outside click
+    $effect(() => {
+        if (!showMoreMenu) return
+        /** @param {MouseEvent} e */
+        function onDocClick(e) {
+            if (
+                moreMenuRef &&
+                e.target instanceof Node &&
+                !moreMenuRef.contains(e.target)
+            ) {
+                showMoreMenu = false
+            }
+        }
+        document.addEventListener('click', onDocClick)
+        return () => document.removeEventListener('click', onDocClick)
+    })
+
     // Navigation via keys
     /**
      * @param {KeyboardEvent} e
@@ -339,6 +359,10 @@
     function handleKeydown(e) {
         if (e.key === 'Escape' && showBookmarkMenu) {
             showBookmarkMenu = false
+            return
+        }
+        if (e.key === 'Escape' && showMoreMenu) {
+            showMoreMenu = false
             return
         }
         if (e.key === 'ArrowRight') nextHadith()
@@ -371,8 +395,85 @@
         <div
             class="flex flex-col gap-2 md:flex-row md:items-center w-full max-w-2xl mx-auto mb-2 md:mb-6"
         >
-            <!-- Utility buttons: top row on mobile, right side on desktop -->
-            <div class="flex items-center gap-2 justify-end order-1 md:order-2">
+            <!-- Utility buttons: collapsed into the more-options menu on mobile, shown inline on desktop -->
+            <div class="hidden md:flex items-center gap-2 justify-end order-1 md:order-2">
+                <!-- Language Switcher -->
+                <LanguageSwitcher bind:lang />
+
+                <!-- About Link -->
+                <a
+                    href="/about"
+                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
+                    title={ui('aboutThisCollection', lang)}
+                >
+                    <svg
+                        class="w-5 h-5 md:w-6 md:h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                    </svg>
+                </a>
+
+                <!-- Install App -->
+                <InstallPrompt {lang} />
+            </div>
+
+            <!-- Drawer + search: bottom row on mobile, left side on desktop -->
+            <div class="flex items-center gap-2 flex-1 order-2 md:order-1">
+                <!-- Contents Drawer Trigger (leading) -->
+                <button
+                    onclick={() => (chaptersOpen = true)}
+                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
+                    title={ui('tableOfContents', lang)}
+                    aria-label={ui('openContents', lang)}
+                >
+                    <svg
+                        class="w-5 h-5 md:w-6 md:h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h10"
+                        ></path>
+                    </svg>
+                </button>
+
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <input
+                        type="text"
+                        bind:value={searchQuery}
+                        placeholder={ui('searchPlaceholder', lang)}
+                        class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
+                        oninput={() => (currentIndex = 0)}
+                        dir={lang === 'ur' ? 'rtl' : 'ltr'}
+                    />
+                    <svg
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-dim/50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        ></path>
+                    </svg>
+                </div>
+
                 <!-- Reading Progress Bookmark Button -->
                 <div bind:this={bookmarkRef} class="relative">
                     <button
@@ -500,81 +601,54 @@
                     {/if}
                 </div>
 
-                <!-- About Link -->
-                <a
-                    href="/about"
-                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
-                    title={ui('aboutThisCollection', lang)}
-                >
-                    <svg
-                        class="w-5 h-5 md:w-6 md:h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                <!-- More Options Menu (mobile only; same actions shown inline on desktop) -->
+                <div bind:this={moreMenuRef} class="relative md:hidden">
+                    <button
+                        onclick={() => (showMoreMenu = !showMoreMenu)}
+                        class="p-3 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
+                        title={ui('moreOptions', lang)}
+                        aria-label={ui('moreOptions', lang)}
                     >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                    </svg>
-                </a>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="5" cy="12" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="19" cy="12" r="2"></circle>
+                        </svg>
+                    </button>
 
-                <!-- Install App -->
-                <InstallPrompt {lang} />
+                    {#if showMoreMenu}
+                        <div
+                            class="absolute right-0 top-full mt-2 flex items-center gap-2 bg-bg-card border border-white/10 rounded-full p-2 shadow-2xl z-50"
+                            in:fly={{ y: -10, duration: 200 }}
+                        >
+                            <!-- Language Switcher -->
+                            <LanguageSwitcher bind:lang />
 
-                <!-- Language Switcher -->
-                <LanguageSwitcher bind:lang />
-            </div>
+                            <!-- About Link -->
+                            <a
+                                href="/about"
+                                class="p-3 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all"
+                                title={ui('aboutThisCollection', lang)}
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    ></path>
+                                </svg>
+                            </a>
 
-            <!-- Drawer + search: bottom row on mobile, left side on desktop -->
-            <div class="flex items-center gap-2 flex-1 order-2 md:order-1">
-                <!-- Contents Drawer Trigger (leading) -->
-                <button
-                    onclick={() => (chaptersOpen = true)}
-                    class="p-3 md:p-4 bg-bg-card border border-white/10 rounded-full text-primary/60 hover:text-primary hover:border-primary/30 transition-all cursor-pointer shrink-0"
-                    title={ui('tableOfContents', lang)}
-                    aria-label={ui('openContents', lang)}
-                >
-                    <svg
-                        class="w-5 h-5 md:w-6 md:h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h10"
-                        ></path>
-                    </svg>
-                </button>
-
-                <!-- Search Input -->
-                <div class="relative flex-1">
-                    <input
-                        type="text"
-                        bind:value={searchQuery}
-                        placeholder={ui('searchPlaceholder', lang)}
-                        class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
-                        oninput={() => (currentIndex = 0)}
-                        dir={lang === 'ur' ? 'rtl' : 'ltr'}
-                    />
-                    <svg
-                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-dim/50"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        ></path>
-                    </svg>
+                            <!-- Install App -->
+                            <InstallPrompt {lang} />
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>

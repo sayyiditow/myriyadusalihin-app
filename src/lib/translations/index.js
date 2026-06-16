@@ -180,6 +180,7 @@ export const UI_STRINGS = {
     freeResource: 'This is a free resource for the Muslim community.',
     allPraise: 'All praise is due to Allah, Lord of the worlds.',
     changeLanguage: 'Change language',
+    moreOptions: 'More options',
   },
   tr: {
     siteTitle: 'Riyad-us-Salihin - Salihlerin Bahçeleri',
@@ -236,6 +237,7 @@ export const UI_STRINGS = {
     freeResource: 'Bu, Müslüman toplumu için ücretsiz bir kaynaktır.',
     allPraise: 'Hamd, alemlerin Rabbi olan Allah\'a mahsustur.',
     changeLanguage: 'Dili değiştir',
+    moreOptions: 'Diğer seçenekler',
   },
   fr: {
     siteTitle: 'Riyad-us-Salihin - Jardins des Vertueux',
@@ -292,6 +294,7 @@ export const UI_STRINGS = {
     freeResource: 'Ceci est une ressource gratuite pour la communauté musulmane.',
     allPraise: 'Toute louange est due à Allah, Seigneur des mondes.',
     changeLanguage: 'Changer la langue',
+    moreOptions: 'Plus d\'options',
   },
   ur: {
     siteTitle: 'ریاض الصالحین - نیک لوگوں کے باغات',
@@ -348,6 +351,7 @@ export const UI_STRINGS = {
     freeResource: 'یہ مسلم کمیونٹی کے لیے ایک مفت ذریعہ ہے۔',
     allPraise: 'تمام تعریفیں اللہ ہی کے لیے ہیں، جو تمام جہانوں کا رب ہے۔',
     changeLanguage: 'زبان تبدیل کریں',
+    moreOptions: 'مزید آپشنز',
   },
 }
 
