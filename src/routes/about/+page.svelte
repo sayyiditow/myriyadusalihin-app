@@ -115,12 +115,7 @@
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                The collection covers a comprehensive range of topics essential
-                to a Muslim's daily life, including sincerity, patience,
-                gratitude, remembrance of Allah, good manners, family relations,
-                social conduct, and the virtues of various acts of worship. Each
-                chapter begins with relevant Quranic verses, followed by
-                carefully selected hadiths that illuminate the topic.
+                {ui('aboutDesc2', lang)}
             </p>
         </section>
 
@@ -166,65 +161,39 @@
                 >
                 <span
                     class="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
-                    >Nawa, Syria</span
+                    >{ui('nawaLocation', lang)}</span
                 >
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                <strong class="text-primary"
-                    >Imam Yahya ibn Sharaf an-Nawawi</strong
-                > (رَحِمَهُ اللهُ) was born in the village of Nawa, near Damascus,
-                Syria. He is regarded as one of the most influential scholars in
-                Islamic history, particularly in the fields of hadith and Shafi'i
-                jurisprudence.
+                {ui('aboutAuthorBio1', lang)}
             </p>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                Despite living only 45 years, Imam an-Nawawi produced an
-                extraordinary body of work. His most famous contributions
-                include:
+                {ui('aboutAuthorBio2', lang)}
             </p>
 
             <ul class="space-y-2 text-sm md:text-base text-text-main/80">
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        ><strong class="text-text-main">Riyad-us-Salihin</strong
-                        > — This collection of hadiths for daily guidance</span
-                    >
+                    <span>{ui('aboutAuthorWork1', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        ><strong class="text-text-main"
-                            >Al-Arba'in an-Nawawiyyah</strong
-                        > — The Forty Hadiths, perhaps the most memorized hadith
-                        collection</span
-                    >
+                    <span>{ui('aboutAuthorWork2', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        ><strong class="text-text-main"
-                            >Sharh Sahih Muslim</strong
-                        > — A comprehensive commentary on Sahih Muslim</span
-                    >
+                    <span>{ui('aboutAuthorWork3', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        ><strong class="text-text-main">Al-Majmu'</strong> — An extensive
-                        work on Shafi'i jurisprudence</span
-                    >
+                    <span>{ui('aboutAuthorWork4', lang)}</span>
                 </li>
             </ul>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                Imam an-Nawawi was known for his piety, asceticism, and devotion
-                to knowledge. He never married, dedicating his entire life to
-                scholarship and worship. He passed away in his hometown of Nawa
-                at the age of 45, leaving behind a legacy that continues to
-                benefit Muslims worldwide.
+                {ui('aboutAuthorBio3', lang)}
             </p>
         </section>
 
@@ -259,12 +228,7 @@
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                The English translation and commentary used in this application
-                is sourced from the work published by <strong
-                    class="text-primary">Muslims At Work Publications</strong
-                >, a South African Islamic publishing house dedicated to making
-                classical Islamic texts accessible to English-speaking
-                audiences.
+                {ui('aboutTransDesc1', lang)}
             </p>
 
             <div
@@ -273,23 +237,21 @@
                 <p
                     class="text-xs text-primary mb-2 uppercase font-mono font-bold"
                 >
-                    Publication Details
+                    {ui('pubDetails', lang)}
                 </p>
                 <div class="text-sm md:text-base text-text-main/80 space-y-1">
                     <p>
-                        <strong
-                            >A Translation and Commentary of Riyad al-Salihin</strong
-                        >
+                        <strong>{ui('pubTitle', lang)}</strong>
                     </p>
-                    <p class="text-text-dim">3 Volumes (Hadith 1–1896)</p>
+                    <p class="text-text-dim">{ui('pubVolumes', lang)}</p>
                     <p>
-                        <span class="text-text-dim">General Editor:</span>
+                        <span class="text-text-dim">{ui('pubEditor', lang)}</span>
                         <strong class="text-primary"
                             >Moulana Afzal Ismail</strong
                         >
                     </p>
                     <p class="text-text-dim">
-                        Muslims At Work Publications, South Africa
+                        {ui('pubPublisher', lang)}
                     </p>
                     <p>
                         <a
@@ -305,17 +267,14 @@
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                This translation features modern, accessible English while
-                maintaining fidelity to the original Arabic. The commentary
-                draws from classical scholars and provides context for
-                contemporary readers, explaining the practical application of
-                each hadith in daily life.
+                {ui('aboutTransDesc2', lang)}
             </p>
 
-            <!-- Turkish Sources -->
+            <!-- Turkish Sources — only shown in Turkish -->
+            {#if lang === 'tr'}
             <div class="border-t border-white/10 pt-4 space-y-3">
                 <p class="text-sm font-semibold text-text-main">
-                    Türkçe Çeviri Kaynakları
+                    {ui('turkishSourcesTitle', lang)}
                 </p>
 
                 <div class="bg-primary/5 p-4 rounded-xl border border-primary/10 space-y-3">
@@ -348,6 +307,7 @@
                     </div>
                 </div>
             </div>
+            {/if}
         </section>
 
         <!-- Acknowledgments -->
@@ -379,54 +339,36 @@
             </div>
 
             <p class="text-text-main/80 leading-relaxed text-sm md:text-base">
-                We express our deepest gratitude to all those who have
-                contributed to preserving and transmitting this sacred knowledge
-                across generations:
+                {ui('aboutAckIntro', lang)}
             </p>
 
             <ul class="space-y-2 text-sm md:text-base text-text-main/80">
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        >The scholars and hadith masters who preserved these
-                        prophetic traditions</span
-                    >
+                    <span>{ui('ackBullet1', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        >Imam an-Nawawi for his meticulous compilation and
-                        selection</span
-                    >
+                    <span>{ui('ackBullet2', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        >Muslims At Work Publications for their excellent
-                        translation and commentary</span
-                    >
+                    <span>{ui('ackBullet3', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        >Darussalam Publishers and Hafiz Salahuddin Yusuf for
-                        their inspiring commentary that first sparked this
-                        project</span
-                    >
+                    <span>{ui('ackBullet4', lang)}</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-primary mt-1">•</span>
-                    <span
-                        >All who have supported the creation of this digital
-                        resource</span
-                    >
+                    <span>{ui('ackBullet5', lang)}</span>
                 </li>
             </ul>
 
             <div class="text-center pt-4 border-t border-white/10">
                 <p class="arabic text-lg text-primary/80">جزاهم الله خيرا</p>
                 <p class="text-xs text-text-dim mt-1">
-                    May Allah reward them with goodness
+                    {ui('ackDua', lang)}
                 </p>
             </div>
         </section>
