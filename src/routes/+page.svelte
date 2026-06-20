@@ -455,7 +455,7 @@
                         type="text"
                         bind:value={searchQuery}
                         placeholder={ui('searchPlaceholder', lang)}
-                        class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq' : ''}"
+                        class="w-full bg-bg-card border border-white/10 rounded-full h-11 md:h-14 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm md:text-base placeholder:text-text-dim/50 {lang === 'ur' ? 'text-right search-input-nastaliq placeholder:text-[13px]' : ''}"
                         oninput={() => (currentIndex = 0)}
                         dir={lang === 'ur' ? 'rtl' : 'ltr'}
                     />
@@ -730,7 +730,7 @@
                                 {currentHadith.narrator}
                             </p>
                             <p
-                                class="translation-text text-sm md:text-base leading-relaxed text-text-main font-light italic opacity-80"
+                                class="translation-text text-base md:text-lg leading-relaxed text-text-main font-light italic opacity-80"
                             >
                                 {currentHadith.englishText}
                             </p>
@@ -746,7 +746,7 @@
                                     {ui('commentary', lang)}
                                 </p>
                                 <div
-                                    class="commentary-text text-sm md:text-base text-text-main/80 leading-relaxed font-light"
+                                    class="commentary-text text-base md:text-lg text-text-main/80 leading-relaxed font-light"
                                 >
                                     {@html currentHadith.commentary}
                                 </div>

@@ -41,11 +41,11 @@ def save_json(data, path):
 
 
 def is_urdu(text):
-    """True if text starts with Arabic/Urdu script (not Latin letters)."""
+    """True if text contains meaningful Arabic/Urdu script content."""
     if not text:
         return False
-    t = text.strip().lstrip('"\'(«»')
-    return not bool(re.match(r'^[A-Za-z]', t))
+    urdu_chars = sum(1 for c in text if '؀' <= c <= 'ۿ' or 'ݐ' <= c <= 'ݿ' or 'ﭐ' <= c <= '﷿' or 'ﹰ' <= c <= '﻿')
+    return urdu_chars > len(text) * 0.15
 
 
 def extract_json(text):
